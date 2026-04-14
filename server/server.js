@@ -17,6 +17,8 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error('❌ MongoDB error:', err));
 
 // ── ROUTES ──
+app.get('/', (req, res) => res.send('🚀 Polaroid Shop API is running...'));
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders',   require('./routes/orders'));
 app.use('/api/payment',  require('./routes/payment'));
