@@ -101,7 +101,9 @@ export default function Checkout() {
     try {
       // 1. Create the DB order first
       const orderRes = await api.post('/orders', {
-        items: cart.items,
+        items: cart.items.map(({ name, price, qty, image, category }) => ({
+          name, price, qty, image, category,
+        })),
         shippingAddress: form,
         totalPrice: total,
         paid: false,
