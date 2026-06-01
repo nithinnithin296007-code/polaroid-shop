@@ -7,9 +7,16 @@ require('dotenv').config();
 const app = express();
 
 // ── MIDDLEWARE ──
-app.use(helmet());
-app.use(cors());
+app.use(helmet({ crossOriginResourcePolicy: false }));
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json({ limit: '10mb' }));
+
+// ── HEALTH CHECK ──
+app.get('/', (req, res) => res.json({ status: 'ok', message: '🚀 FrameOnyx API running' }));
 
 // ── DATABASE ──
 mongoose.connect(process.env.MONGO_URI)
@@ -17,11 +24,8 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error('❌ MongoDB error:', err));
 
 // ── ROUTES ──
-app.get('/', (req, res) => res.send('🚀 Polaroid Shop API is running...'));
-app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders',   require('./routes/orders'));
-app.use('/api/payment',  require('./routes/payment'));
 app.use('/api/auth',     require('./routes/authRoutes'));
 app.use('/api/admin',    require('./routes/adminRoutes'));
 app.use('/api/reviews',  require('./routes/reviews'));
